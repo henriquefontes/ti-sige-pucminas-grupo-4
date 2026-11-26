@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NF-e FICTÍCIA para testes do Vitalis. Não tem validade fiscal. -->
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+  <NFe>
+    <infNFe Id="NFe31261123456789000195550010000550191876543215" versao="4.00">
+      <ide>
+        <cUF>31</cUF>
+        <cNF>87654321</cNF>
+        <natOp>Venda de mercadoria adquirida de terceiros</natOp>
+        <mod>55</mod>
+        <serie>1</serie>
+        <nNF>55019</nNF>
+        <dhEmi>2026-11-21T14:40:00-03:00</dhEmi>
+        <tpNF>1</tpNF>
+        <tpAmb>2</tpAmb>
+      </ide>
+      <emit>
+        <CNPJ>23456789000195</CNPJ>
+        <xNome>Medfarma Distribuidora S.A.</xNome>
+        <xFant>Medfarma</xFant>
+        <enderEmit>
+          <xLgr>Rua Fictícia</xLgr>
+          <nro>100</nro>
+          <xBairro>Centro</xBairro>
+          <xMun>Belo Horizonte</xMun>
+          <UF>MG</UF>
+          <CEP>30000000</CEP>
+        </enderEmit>
+        <IE>0012345670001</IE>
+        <CRT>3</CRT>
+      </emit>
+      <dest>
+        <CNPJ>67890123000116</CNPJ>
+        <xNome>Vitalis Loja Savassi (fictícia)</xNome>
+      </dest>
+      <det nItem="1">
+        <prod>
+          <cProd>000029</cProd>
+          <cEAN>7891000000029</cEAN>
+          <xProd>SERTRALINA 50MG 30 COMP</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>40.0000</qCom>
+          <vUnCom>12.5000000000</vUnCom>
+          <vProd>500.00</vProd>
+          <cEANTrib>7891000000029</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>40.0000</qTrib>
+          <vUnTrib>12.5000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>SE1305</nLote>
+            <qLote>40.000</qLote>
+            <dFab>2026-05-02</dFab>
+            <dVal>2028-05-31</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <det nItem="2">
+        <prod>
+          <cProd>000007</cProd>
+          <cEAN>7891000000007</cEAN>
+          <xProd>METFORMINA 850MG 30 COMP</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>60.0000</qCom>
+          <vUnCom>4.8000000000</vUnCom>
+          <vProd>288.00</vProd>
+          <cEANTrib>7891000000007</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>60.0000</qTrib>
+          <vUnTrib>4.8000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>MT6801</nLote>
+            <qLote>60.000</qLote>
+            <dFab>2026-06-01</dFab>
+            <dVal>2028-06-30</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <det nItem="3">
+        <prod>
+          <cProd>000025</cProd>
+          <cEAN>7891000000025</cEAN>
+          <xProd>AZITROMICINA 500MG 3 COMP</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>24.0000</qCom>
+          <vUnCom>11.0000000000</vUnCom>
+          <vProd>264.00</vProd>
+          <cEANTrib>7891000000025</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>24.0000</qTrib>
+          <vUnTrib>11.0000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>AZ3501</nLote>
+            <qLote>24.000</qLote>
+            <dFab>2026-04-20</dFab>
+            <dVal>2028-04-30</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <det nItem="4">
+        <prod>
+          <cProd>000001</cProd>
+          <cEAN>7891000000001</cEAN>
+          <xProd>DIPIRONA SODICA 500MG 10 COMP</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>100.0000</qCom>
+          <vUnCom>2.1000000000</vUnCom>
+          <vProd>210.00</vProd>
+          <cEANTrib>7891000000001</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>100.0000</qTrib>
+          <vUnTrib>2.1000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>DP2405</nLote>
+            <qLote>100.000</qLote>
+            <dFab>2026-07-01</dFab>
+            <dVal>2029-07-31</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <total>
+        <ICMSTot>
+          <vProd>1262.00</vProd>
+          <vNF>1262.00</vNF>
+        </ICMSTot>
+      </total>
+      <cobr>
+        <fat>
+          <nFat>55019</nFat>
+          <vOrig>1262.00</vOrig>
+          <vLiq>1262.00</vLiq>
+        </fat>
+        <dup>
+          <nDup>001</nDup>
+          <dVenc>2026-12-20</dVenc>
+          <vDup>1262.00</vDup>
+        </dup>
+      </cobr>
+    </infNFe>
+  </NFe>
+  <protNFe versao="4.00">
+    <infProt>
+      <tpAmb>2</tpAmb>
+      <chNFe>31261123456789000195550010000550191876543215</chNFe>
+      <dhRecbto>2026-11-21T14:40:00-03:00</dhRecbto>
+      <nProt>131260000055019</nProt>
+      <cStat>100</cStat>
+      <xMotivo>Autorizado o uso da NF-e</xMotivo>
+    </infProt>
+  </protNFe>
+</nfeProc>

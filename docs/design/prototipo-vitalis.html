@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f6f6f3;color:#1b1c1a;font-family:'Geist',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:oklch(0.45 0.11 160);text-decoration:none}
+a:hover{color:oklch(0.35 0.11 160)}
+input,button{font-family:inherit}
+</style>
+</helmet>
+<div style="display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh">
+  <aside style="background:#fbfbf9;border-right:1px solid #e7e7e2;padding:20px 14px;display:flex;flex-direction:column;gap:24px;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 8px">
+      <div style="width:26px;height:26px;border-radius:7px;background:oklch(0.52 0.11 160);display:grid;place-items:center">
+        <div style="width:10px;height:10px;border-radius:50%;background:#fbfbf9"></div>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <span style="font-weight:600;font-size:15px;letter-spacing:-0.01em">Vitalis</span>
+        <span style="font-size:11px;color:#7a7c77">Gestão farmacêutica</span>
+      </div>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:18px">
+      <sc-for list="{{ nav }}" as="g" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:11px;color:#8b8d87;padding:0 10px 6px;text-transform:uppercase;letter-spacing:0.06em">{{ g.label }}</span>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
+            <button onClick="{{ it.go }}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;background:{{ it.bg }};color:{{ it.fg }};font-weight:{{ it.fw }};font-size:14px;padding:8px 10px;border-radius:8px;cursor:pointer;text-align:left" style-hover="background:#efefea">
+              <span>{{ it.label }}</span>
+              <sc-if value="{{ it.count }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family:'Geist Mono',monospace;font-size:11px;color:oklch(0.5 0.14 25);background:oklch(0.95 0.03 25);padding:1px 6px;border-radius:10px">{{ it.count }}</span>
+              </sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </nav>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid #e7e7e2">
+      <div style="width:30px;height:30px;border-radius:50%;background:#e9e9e4;display:grid;place-items:center;font-size:12px;font-weight:600;color:#5c5e5a">MS</div>
+      <div style="display:flex;flex-direction:column;min-width:0">
+        <span style="font-size:13px;font-weight:500">Marina Souza</span>
+        <span style="font-size:11px;color:#7a7c77">Farmacêutica · CRF-MG 21.430</span>
+      </div>
+    </div>
+  </aside>
+
+  <main style="padding:28px 40px 60px;display:flex;flex-direction:column;gap:24px;min-width:0">
+    <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:12px;color:#7a7c77">{{ crumb }}</span>
+        <h1 style="margin:0;font-size:26px;font-weight:600;letter-spacing:-0.02em">{{ title }}</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#6b6d68">
+        <span>Seg, 28 set 2026</span>
+        <span style="width:4px;height:4px;border-radius:50%;background:#c9cac4"></span>
+        <span>Loja Savassi</span>
+        <span style="display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid #e3e3de;border-radius:20px;background:#fff">
+          <span style="width:6px;height:6px;border-radius:50%;background:oklch(0.6 0.13 160)"></span>SNGPC conectado
+        </span>
+      </div>
+    </header>
+
+    <sc-if value="{{ isPainel }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:13px;color:#6b6d68">{{ k.label }}</span>
+              <span style="font-size:26px;font-weight:600;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ k.value }}</span>
+              <span style="font-size:12px;color:{{ k.noteColor }}">{{ k.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px">
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-weight:600;font-size:15px">Vendas · últimos 7 dias</span>
+              <span style="font-size:13px;color:#6b6d68;font-family:'Geist Mono',monospace">R$ 38.412,70</span>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:14px;height:180px">
+              <sc-for list="{{ week }}" as="d" hint-placeholder-count="7">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end">
+                  <span style="font-size:11px;color:#8b8d87;font-family:'Geist Mono',monospace">{{ d.v }}</span>
+                  <div style="width:100%;max-width:44px;height:{{ d.h }};background:{{ d.c }};border-radius:6px 6px 2px 2px"></div>
+                  <span style="font-size:12px;color:#6b6d68">{{ d.d }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px">
+            <span style="font-weight:600;font-size:15px">Pendências</span>
+            <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="4">
+              <button onClick="{{ a.go }}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;border:0;background:transparent;padding:10px;margin:0 -10px;border-radius:8px;cursor:pointer;color:inherit" style-hover="background:#f6f6f3">
+                <span style="width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0;background:{{ a.dot }}"></span>
+                <span style="display:flex;flex-direction:column;gap:2px">
+                  <span style="font-size:14px;font-weight:500">{{ a.t }}</span>
+                  <span style="font-size:12px;color:#6b6d68">{{ a.s }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;overflow-x:auto">
+          <div style="padding:16px 20px;font-weight:600;font-size:15px;border-bottom:1px solid #efefea">Últimas vendas</div>
+          <div style="display:grid;grid-template-columns:90px minmax(0,2fr) 1fr 1fr 110px;min-width:640px;padding:10px 20px;font-size:12px;color:#7a7c77;border-bottom:1px solid #efefea">
+            <span>Hora</span><span>Itens</span><span>Pagamento</span><span>Operador</span><span style="text-align:right">Total</span>
+          </div>
+          <sc-for list="{{ lastSales }}" as="s" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:90px minmax(0,2fr) 1fr 1fr 110px;min-width:640px;padding:12px 20px;font-size:14px;border-bottom:1px solid #f3f3ef;align-items:center">
+              <span style="font-family:'Geist Mono',monospace;color:#6b6d68;font-size:13px">{{ s.h }}</span>
+              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.i }}</span>
+              <span style="color:#4a4c48">{{ s.p }}</span>
+              <span style="color:#4a4c48">{{ s.o }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;font-weight:500">{{ s.t }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isVendas }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+        <div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:12px">
+          <div style="position:relative">
+            <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Buscar por nome, princípio ativo ou código de barras" style="width:100%;height:46px;border:1px solid #e3e3de;border-radius:10px;padding:0 16px;font-size:15px;background:#fff;outline:none" style-focus="border-color:oklch(0.55 0.11 160);box-shadow:0 0 0 3px oklch(0.94 0.04 160)">
+            <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:52px;left:0;right:0;background:#fff;border:1px solid #e3e3de;border-radius:10px;box-shadow:0 12px 32px rgba(20,20,15,0.08);z-index:5;overflow:hidden">
+                <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+                  <button onClick="{{ r.add }}" style="width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:16px;align-items:center;border:0;background:#fff;padding:12px 16px;text-align:left;cursor:pointer;border-bottom:1px solid #f3f3ef" style-hover="background:#f6f6f3">
+                    <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">{{ r.nome }}</span><span style="font-size:12px;color:#7a7c77">{{ r.pa }} · estoque {{ r.est }}</span></span>
+                    <span style="font-size:11px;color:{{ r.tagFg }};background:{{ r.tagBg }};padding:2px 8px;border-radius:10px">{{ r.tag }}</span>
+                    <span style="font-variant-numeric:tabular-nums;font-size:14px">{{ r.preco }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;overflow-x:auto">
+            <div style="display:grid;grid-template-columns:minmax(0,2fr) 110px 120px 100px 32px;min-width:620px;padding:10px 18px;font-size:12px;color:#7a7c77;border-bottom:1px solid #efefea;gap:12px">
+              <span>Produto</span><span>Lote (FEFO)</span><span style="text-align:center">Qtd.</span><span style="text-align:right">Subtotal</span><span></span>
+            </div>
+            <sc-for list="{{ cartRows }}" as="c" hint-placeholder-count="3">
+              <div style="display:grid;grid-template-columns:minmax(0,2fr) 110px 120px 100px 32px;min-width:620px;padding:14px 18px;gap:12px;align-items:center;border-bottom:1px solid #f3f3ef">
+                <span style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                  <span style="font-size:14px;font-weight:500">{{ c.nome }}</span>
+                  <span style="display:flex;gap:6px;align-items:center;font-size:12px;color:#7a7c77">
+                    <span>{{ c.preco }} un.</span>
+                    <sc-if value="{{ c.ctrl }}" hint-placeholder-val="{{ false }}"><span style="color:oklch(0.48 0.11 60);background:oklch(0.95 0.04 75);padding:1px 7px;border-radius:10px;font-size:11px">{{ c.tag }}</span></sc-if>
+                  </span>
+                </span>
+                <span style="display:flex;flex-direction:column;font-family:'Geist Mono',monospace;font-size:12px"><span>{{ c.lote }}</span><span style="color:#8b8d87">val. {{ c.val }}</span></span>
+                <span style="display:flex;align-items:center;justify-content:center;gap:4px">
+                  <button onClick="{{ c.dec }}" style="width:28px;height:28px;border:1px solid #e3e3de;background:#fff;border-radius:7px;cursor:pointer;font-size:15px;color:#4a4c48">−</button>
+                  <span style="width:28px;text-align:center;font-variant-numeric:tabular-nums">{{ c.qtd }}</span>
+                  <button onClick="{{ c.inc }}" style="width:28px;height:28px;border:1px solid #e3e3de;background:#fff;border-radius:7px;cursor:pointer;font-size:15px;color:#4a4c48">+</button>
+                </span>
+                <span style="text-align:right;font-variant-numeric:tabular-nums;font-weight:500">{{ c.sub }}</span>
+                <button onClick="{{ c.rm }}" style="border:0;background:transparent;color:#a0a29c;cursor:pointer;font-size:16px" style-hover="color:oklch(0.5 0.14 25)">×</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:40px;text-align:center;color:#8b8d87;font-size:14px">Nenhum item. Busque um produto para iniciar a venda.</div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ needsRx }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+                <span style="font-weight:600;font-size:15px">Retenção de receita</span>
+                <span style="font-size:12px;color:#7a7c77">Obrigatório para escrituração no SNGPC</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+                <sc-for list="{{ rxFields }}" as="f" hint-placeholder-count="6">
+                  <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#6b6d68">
+                    {{ f.l }}
+                    <input value="{{ f.v }}" readonly style="height:38px;border:1px solid #e3e3de;border-radius:8px;padding:0 12px;font-size:14px;color:#1b1c1a;background:#fbfbf9">
+                  </label>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+        <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:18px;position:sticky;top:20px;flex:1 1 300px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:12px;color:#7a7c77">Cliente</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #e3e3de;border-radius:8px;padding:10px 12px">
+              <span style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:500">João Pereira</span><span style="font-size:12px;color:#7a7c77">CPF ***.412.886-** · Convênio Unimed</span></span>
+              <span style="font-size:12px;color:#7a7c77">Trocar</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+            <div style="display:flex;justify-content:space-between;color:#4a4c48"><span>Subtotal</span><span style="font-variant-numeric:tabular-nums">{{ subtotal }}</span></div>
+            <div style="display:flex;justify-content:space-between;color:#4a4c48"><span>Desconto convênio (10%)</span><span style="font-variant-numeric:tabular-nums">− {{ discount }}</span></div>
+            <div style="height:1px;background:#efefea;margin:6px 0"></div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:500">Total</span><span style="font-size:28px;font-weight:600;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ total }}</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:12px;color:#7a7c77">Pagamento</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+              <sc-for list="{{ pays }}" as="p" hint-placeholder-count="4">
+                <button onClick="{{ p.pick }}" style="height:40px;border:1px solid {{ p.bd }};background:{{ p.bg }};color:{{ p.fg }};border-radius:8px;font-size:14px;cursor:pointer;font-weight:500">{{ p.l }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <button onClick="{{ finish }}" style="height:48px;border:0;border-radius:10px;background:oklch(0.5 0.11 160);color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:oklch(0.44 0.11 160)">Finalizar venda</button>
+          <span style="font-size:12px;color:#7a7c77;line-height:1.5;text-wrap:pretty">Ao finalizar, o estoque é baixado por lote, o valor entra no caixa e as saídas controladas são escrituradas.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isEstoque }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+          <div style="display:flex;gap:4px;background:#ededE8;padding:3px;border-radius:9px">
+            <sc-for list="{{ stockTabs }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.pick }}" style="border:0;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }};padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;display:flex;gap:6px;align-items:center">{{ t.l }}<span style="font-family:'Geist Mono',monospace;font-size:11px;color:#8b8d87">{{ t.n }}</span></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button style="height:36px;padding:0 14px;border:1px solid #e3e3de;background:#fff;border-radius:8px;font-size:13px;cursor:pointer">Inventário</button>
+            <button style="height:36px;padding:0 14px;border:0;background:#1b1c1a;color:#fff;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500">Registrar entrada (NF-e)</button>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;overflow-x:auto">
+          <div style="display:grid;grid-template-columns:minmax(0,2.2fr) 1fr 100px 110px 80px 80px 130px;min-width:880px;gap:12px;padding:10px 20px;font-size:12px;color:#7a7c77;border-bottom:1px solid #efefea">
+            <span>Produto</span><span>Classe</span><span>Lote</span><span>Validade</span><span style="text-align:right">Qtd.</span><span style="text-align:right">Mín.</span><span>Situação</span>
+          </div>
+          <sc-for list="{{ stockRows }}" as="s" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:minmax(0,2.2fr) 1fr 100px 110px 80px 80px 130px;min-width:880px;gap:12px;padding:12px 20px;font-size:14px;border-bottom:1px solid #f3f3ef;align-items:center">
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:500">{{ s.nome }}</span><span style="font-size:12px;color:#7a7c77">{{ s.pa }}</span></span>
+              <span style="font-size:13px;color:#4a4c48">{{ s.classe }}</span>
+              <span style="font-family:'Geist Mono',monospace;font-size:12px">{{ s.lote }}</span>
+              <span style="font-family:'Geist Mono',monospace;font-size:12px">{{ s.val }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums">{{ s.qtd }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;color:#8b8d87">{{ s.min }}</span>
+              <span><span style="font-size:12px;padding:3px 9px;border-radius:10px;background:{{ s.bg }};color:{{ s.fg }}">{{ s.st }}</span></span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCtrl }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:13px;color:#6b6d68">Período de escrituração</span>
+              <span style="font-size:20px;font-weight:600">22 a 28 set 2026</span>
+              <span style="font-size:12px;color:#7a7c77">Último envio aceito em 21/09 às 19:02 · protocolo 2026.0921.8841</span>
+            </div>
+            <button onClick="{{ sendSngpc }}" style="height:42px;padding:0 18px;border:0;border-radius:9px;background:oklch(0.5 0.11 160);color:#fff;font-weight:600;font-size:14px;cursor:pointer">Gerar e transmitir XML</button>
+          </div>
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:13px;color:#6b6d68">Movimentações no período</span>
+            <span style="font-size:26px;font-weight:600">64</span>
+            <span style="font-size:12px;color:#7a7c77">41 saídas · 23 entradas</span>
+          </div>
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:13px;color:#6b6d68">Inconsistências</span>
+            <span style="font-size:26px;font-weight:600;color:oklch(0.5 0.14 25)">2</span>
+            <span style="font-size:12px;color:#7a7c77">Corrigir antes do envio</span>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;overflow-x:auto">
+          <div style="padding:16px 20px;font-weight:600;font-size:15px;border-bottom:1px solid #efefea">Livro de movimentações</div>
+          <div style="display:grid;grid-template-columns:120px 80px minmax(0,2fr) 90px 60px minmax(0,1.4fr) 130px;min-width:920px;gap:12px;padding:10px 20px;font-size:12px;color:#7a7c77;border-bottom:1px solid #efefea">
+            <span>Data</span><span>Tipo</span><span>Medicamento</span><span>Lote</span><span style="text-align:right">Qtd.</span><span>Receita / origem</span><span>Status</span>
+          </div>
+          <sc-for list="{{ ctrlRows }}" as="m" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:120px 80px minmax(0,2fr) 90px 60px minmax(0,1.4fr) 130px;min-width:920px;gap:12px;padding:12px 20px;font-size:14px;border-bottom:1px solid #f3f3ef;align-items:center">
+              <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#6b6d68">{{ m.d }}</span>
+              <span style="font-size:13px;color:{{ m.tc }}">{{ m.t }}</span>
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:500">{{ m.nome }}</span><span style="font-size:12px;color:#7a7c77">{{ m.lista }}</span></span>
+              <span style="font-family:'Geist Mono',monospace;font-size:12px">{{ m.lote }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums">{{ m.q }}</span>
+              <span style="font-size:13px;color:#4a4c48">{{ m.rx }}</span>
+              <span><span style="font-size:12px;padding:3px 9px;border-radius:10px;background:{{ m.bg }};color:{{ m.fg }}">{{ m.st }}</span></span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isRepo }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+        <div style="flex:999 1 560px;min-width:0;background:#fff;border:1px solid #e7e7e2;border-radius:12px;overflow-x:auto">
+          <div style="padding:16px 20px;border-bottom:1px solid #efefea;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+            <span style="font-weight:600;font-size:15px">Sugestões de reposição</span>
+            <span style="font-size:12px;color:#7a7c77">Giro médio dos últimos 30 dias · cobertura alvo de 21 dias</span>
+          </div>
+          <div style="display:grid;grid-template-columns:32px minmax(0,2fr) 80px 70px 90px 90px minmax(0,1fr);min-width:760px;gap:12px;padding:10px 20px;font-size:12px;color:#7a7c77;border-bottom:1px solid #efefea">
+            <span></span><span>Produto</span><span style="text-align:right">Giro/dia</span><span style="text-align:right">Estoque</span><span style="text-align:right">Cobertura</span><span style="text-align:right">Sugerido</span><span>Fornecedor</span>
+          </div>
+          <sc-for list="{{ repoRows }}" as="r" hint-placeholder-count="7">
+            <div onClick="{{ r.toggle }}" style="display:grid;grid-template-columns:32px minmax(0,2fr) 80px 70px 90px 90px minmax(0,1fr);min-width:760px;gap:12px;padding:12px 20px;font-size:14px;border-bottom:1px solid #f3f3ef;align-items:center;cursor:pointer" style-hover="background:#fafaf7">
+              <span style="width:18px;height:18px;border-radius:5px;border:1.5px solid {{ r.cbd }};background:{{ r.cbg }};display:grid;place-items:center;color:#fff;font-size:12px">{{ r.check }}</span>
+              <span style="font-weight:500">{{ r.nome }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;color:#4a4c48">{{ r.giro }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;color:#4a4c48">{{ r.est }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;color:{{ r.cc }}">{{ r.cob }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{{ r.sug }}</span>
+              <span style="font-size:13px;color:#4a4c48">{{ r.forn }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;position:sticky;top:20px;flex:1 1 280px">
+          <span style="font-weight:600;font-size:15px">Pedido de compra</span>
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:#4a4c48"><span>Itens selecionados</span><span>{{ repoCount }}</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:#4a4c48"><span>Unidades</span><span>{{ repoUnits }}</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:14px">Custo estimado</span><span style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums">{{ repoTotal }}</span></div>
+          <button onClick="{{ genOrder }}" style="height:44px;border:0;border-radius:9px;background:oklch(0.5 0.11 160);color:#fff;font-weight:600;font-size:14px;cursor:pointer">Gerar pedidos por fornecedor</button>
+          <span style="font-size:12px;color:#7a7c77;line-height:1.5">O valor é lançado como previsão em contas a pagar.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isFin }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+          <sc-for list="{{ finKpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:13px;color:#6b6d68">{{ k.l }}</span>
+              <span style="font-size:24px;font-weight:600;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:{{ k.c }}">{{ k.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:4px;background:#ededE8;padding:3px;border-radius:9px;align-self:flex-start">
+          <sc-for list="{{ finTabs }}" as="t" hint-placeholder-count="3">
+            <button onClick="{{ t.pick }}" style="border:0;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }};padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer">{{ t.l }}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ isFluxo }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+              <span style="font-weight:600;font-size:15px">Fluxo de caixa projetado · próximas 6 semanas</span>
+              <span style="display:flex;gap:16px;font-size:12px;color:#6b6d68">
+                <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:oklch(0.6 0.11 160)"></span>Entradas</span>
+                <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#cfd0ca"></span>Saídas</span>
+              </span>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:24px;height:200px">
+              <sc-for list="{{ flow }}" as="f" hint-placeholder-count="6">
+                <div style="flex:1;display:flex;flex-direction:column;gap:8px;height:100%;justify-content:flex-end;align-items:center">
+                  <div style="display:flex;gap:4px;align-items:flex-end;height:100%;width:100%;justify-content:center">
+                    <div style="width:40%;max-width:26px;height:{{ f.ih }};background:oklch(0.6 0.11 160);border-radius:4px 4px 1px 1px"></div>
+                    <div style="width:40%;max-width:26px;height:{{ f.oh }};background:#cfd0ca;border-radius:4px 4px 1px 1px"></div>
+                  </div>
+                  <span style="font-size:12px;color:#6b6d68">{{ f.w }}</span>
+                  <span style="font-size:12px;font-family:'Geist Mono',monospace;color:{{ f.sc }}">{{ f.s }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;overflow-x:auto">
+            <div style="display:grid;grid-template-columns:110px minmax(0,2fr) minmax(0,1fr) 120px 120px 110px;min-width:820px;gap:12px;padding:10px 20px;font-size:12px;color:#7a7c77;border-bottom:1px solid #efefea">
+              <span>Vencimento</span><span>{{ finCol }}</span><span>Origem</span><span>Forma</span><span style="text-align:right">Valor</span><span>Situação</span>
+            </div>
+            <sc-for list="{{ finRows }}" as="r" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:110px minmax(0,2fr) minmax(0,1fr) 120px 120px 110px;min-width:820px;gap:12px;padding:12px 20px;font-size:14px;border-bottom:1px solid #f3f3ef;align-items:center">
+                <span style="font-family:'Geist Mono',monospace;font-size:12px">{{ r.d }}</span>
+                <span style="font-weight:500">{{ r.n }}</span>
+                <span style="font-size:13px;color:#4a4c48">{{ r.o }}</span>
+                <span style="font-size:13px;color:#4a4c48">{{ r.f }}</span>
+                <span style="text-align:right;font-variant-numeric:tabular-nums">{{ r.v }}</span>
+                <span><span style="font-size:12px;padding:3px 9px;border-radius:10px;background:{{ r.bg }};color:{{ r.fg }}">{{ r.st }}</span></span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isRel }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+          <sc-for list="{{ reports }}" as="r" hint-placeholder-count="4">
+            <button onClick="{{ r.pick }}" style="text-align:left;background:#fff;border:1px solid {{ r.bd }};border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px;cursor:pointer;color:inherit;box-shadow:{{ r.sh }}">
+              <span style="font-weight:600;font-size:15px">{{ r.t }}</span>
+              <span style="font-size:13px;color:#6b6d68;line-height:1.45">{{ r.s }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #e7e7e2;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+            <span style="font-weight:600;font-size:15px">{{ repTitle }}</span>
+            <span style="display:flex;gap:8px">
+              <button style="height:32px;padding:0 12px;border:1px solid #e3e3de;background:#fff;border-radius:7px;font-size:13px;cursor:pointer">Jan–Set 2026</button>
+              <button style="height:32px;padding:0 12px;border:1px solid #e3e3de;background:#fff;border-radius:7px;font-size:13px;cursor:pointer">Exportar PDF</button>
+            </span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ repRows }}" as="b" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:minmax(120px,200px) minmax(0,1fr) 110px;gap:16px;align-items:center;font-size:14px">
+                <span style="color:#4a4c48">{{ b.l }}</span>
+                <div style="height:10px;background:#f0f0ec;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ b.w }};background:{{ b.c }};border-radius:5px"></div></div>
+                <span style="text-align:right;font-variant-numeric:tabular-nums;font-weight:500">{{ b.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <span style="font-size:12px;color:#7a7c77">{{ repNote }}</span>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+</div>
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1b1c1a;color:#fff;padding:12px 18px;border-radius:10px;font-size:14px;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,0.18)">
+    <span style="width:8px;height:8px;border-radius:50%;background:oklch(0.72 0.13 160)"></span>{{ toast }}
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const brl = n => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const T = {
+  ok: { fg: 'oklch(0.44 0.11 160)', bg: 'oklch(0.95 0.03 160)' },
+  warn: { fg: 'oklch(0.47 0.11 60)', bg: 'oklch(0.95 0.045 80)' },
+  bad: { fg: 'oklch(0.5 0.14 25)', bg: 'oklch(0.95 0.03 25)' },
+  neu: { fg: '#5c5e5a', bg: '#efefea' }
+};
+const CATALOG = [
+  { id: 1, nome: 'Dipirona 500mg · 10 comp.', pa: 'Dipirona sódica', preco: 6.9, est: 184, lote: 'DP2291', val: '03/2028', tag: 'Livre' },
+  { id: 2, nome: 'Amoxicilina 500mg · 21 cáps.', pa: 'Amoxicilina', preco: 32.5, est: 42, lote: 'AX8812', val: '11/2026', tag: 'Antimicrobiano', ctrl: true },
+  { id: 3, nome: 'Losartana 50mg · 30 comp.', pa: 'Losartana potássica', preco: 18.4, est: 12, lote: 'LS1043', val: '07/2027', tag: 'Livre' },
+  { id: 4, nome: 'Clonazepam 2mg · 30 comp.', pa: 'Clonazepam', preco: 14.2, est: 26, lote: 'CZ0471', val: '02/2027', tag: 'Controlado B1', ctrl: true },
+  { id: 5, nome: 'Protetor solar FPS 50 · 200ml', pa: 'Dermocosmético', preco: 64.9, est: 31, lote: 'PS5520', val: '09/2027', tag: 'Livre' },
+  { id: 6, nome: 'Azitromicina 500mg · 3 comp.', pa: 'Azitromicina', preco: 27.8, est: 18, lote: 'AZ3390', val: '10/2026', tag: 'Antimicrobiano', ctrl: true },
+  { id: 7, nome: 'Omeprazol 20mg · 28 cáps.', pa: 'Omeprazol', preco: 22.1, est: 96, lote: 'OM7719', val: '05/2028', tag: 'Livre' }
+];
+const STOCK = [
+  ['Amoxicilina 500mg', 'Amoxicilina', 'Antimicrobiano', 'AX8812', '11/2026', 42, 30, 'vence'],
+  ['Azitromicina 500mg', 'Azitromicina', 'Antimicrobiano', 'AZ3390', '10/2026', 18, 20, 'vence'],
+  ['Losartana 50mg', 'Losartana potássica', 'Genérico', 'LS1043', '07/2027', 12, 40, 'min'],
+  ['Clonazepam 2mg', 'Clonazepam', 'Controlado B1', 'CZ0471', '02/2027', 26, 15, 'ok'],
+  ['Dipirona 500mg', 'Dipirona sódica', 'Genérico', 'DP2291', '03/2028', 184, 60, 'ok'],
+  ['Metformina 850mg', 'Cloridrato de metformina', 'Genérico', 'MT6620', '12/2027', 22, 50, 'min'],
+  ['Sertralina 50mg', 'Sertralina', 'Controlado C1', 'SE1180', '01/2027', 34, 20, 'ok'],
+  ['Ibuprofeno 400mg', 'Ibuprofeno', 'Referência', 'IB4402', '10/2026', 58, 30, 'vence'],
+  ['Omeprazol 20mg', 'Omeprazol', 'Genérico', 'OM7719', '05/2028', 96, 40, 'ok']
+];
+const REPO = [
+  ['Losartana 50mg · 30 comp.', 4.2, 12, 76, 'Distrib. Santa Cruz', 7.1],
+  ['Metformina 850mg · 30 comp.', 3.1, 22, 43, 'Profarma', 5.4],
+  ['Dipirona 500mg · 10 comp.', 11.8, 184, 64, 'Distrib. Santa Cruz', 2.3],
+  ['Omeprazol 20mg · 28 cáps.', 5.6, 96, 22, 'Panpharma', 6.8],
+  ['Amoxicilina 500mg · 21 cáps.', 2.4, 42, 12, 'Profarma', 12.9],
+  ['Fralda infantil G · 36 un.', 1.9, 8, 32, 'Atacadão Higiene', 38.5],
+  ['Soro fisiológico 500ml', 2.8, 30, 29, 'Panpharma', 4.2]
+];
+const FIN = {
+  pagar: [
+    ['30/09', 'Distrib. Santa Cruz', 'NF-e 118.442', 'Boleto', 8420.1, 'aberto'],
+    ['01/10', 'Aluguel · Loja Savassi', 'Contrato', 'Transferência', 6500, 'aberto'],
+    ['03/10', 'Profarma', 'NF-e 55.019', 'Boleto', 4312.8, 'aberto'],
+    ['25/09', 'CEMIG', 'Conta 09/2026', 'Débito', 912.44, 'atrasado'],
+    ['20/09', 'Panpharma', 'NF-e 90.331', 'Boleto', 2790, 'pago'],
+    ['15/09', 'Sistema de pagamentos', 'Taxa maquininha', 'Débito', 684.3, 'pago']
+  ],
+  receber: [
+    ['29/09', 'Cartão de crédito · lote 28/08', 'Vendas', 'Adquirente', 12840.5, 'aberto'],
+    ['05/10', 'Convênio Unimed', 'Fatura set/2026', 'Boleto', 5210.9, 'aberto'],
+    ['10/10', 'Farmácia Popular', 'Repasse set/2026', 'Transferência', 3380.2, 'aberto'],
+    ['22/09', 'Convênio Cemig Saúde', 'Fatura ago/2026', 'Boleto', 1980, 'atrasado'],
+    ['26/09', 'Cartão de débito', 'Vendas', 'Adquirente', 4102.7, 'pago']
+  ]
+};
+const REPORTS = {
+  vendas: { t: 'Vendas por categoria', s: 'Faturamento e margem por linha de produto.', rows: [['Medicamentos genéricos', 142300], ['Medicamentos de referência', 98400], ['Dermocosméticos', 61200], ['Higiene e perfumaria', 44800], ['Controlados e antimicrobianos', 37900], ['Conveniência', 12600]], note: 'Faturamento bruto acumulado no período.', c: 'oklch(0.6 0.11 160)' },
+  abc: { t: 'Curva ABC de produtos', s: 'Itens que concentram o faturamento.', rows: [['Classe A · 48 itens', 279800], ['Classe B · 131 itens', 83900], ['Classe C · 1.204 itens', 33500]], note: 'Classe A representa 70% do faturamento com 3,5% do mix.', c: 'oklch(0.6 0.11 160)' },
+  perdas: { t: 'Perdas por vencimento', s: 'Valor de custo descartado por mês.', rows: [['Setembro', 820], ['Agosto', 1240], ['Julho', 1510], ['Junho', 2180], ['Maio', 2410], ['Abril', 2690]], note: 'Queda de 69% desde a adoção do controle por lote e da reposição automática.', c: 'oklch(0.62 0.12 25)' },
+  dre: { t: 'DRE simplificado', s: 'Receita, custos e resultado do mês.', rows: [['Receita bruta', 164200], ['Custo das mercadorias', 98500], ['Despesas operacionais', 38700], ['Impostos', 11400], ['Resultado líquido', 15600]], note: 'Competência setembro de 2026.', c: 'oklch(0.6 0.11 160)' }
+};
+const PAGES = {
+  painel: ['Visão geral', 'Painel'], vendas: ['Comercial', 'Nova venda'], estoque: ['Estoque', 'Produtos e lotes'],
+  ctrl: ['Estoque', 'Controlados · SNGPC'], repo: ['Estoque', 'Reposição'], fin: ['Financeiro', 'Contas e fluxo de caixa'], rel: ['Gestão', 'Relatórios']
+};
+
+class Component extends DCLogic {
+  state = { page: 'painel', q: '', cart: [{ id: 2, qtd: 1 }, { id: 1, qtd: 2 }, { id: 5, qtd: 1 }], pay: 'Convênio', stockTab: 'todos', finTab: 'pagar', repoSel: [0, 1, 3, 4, 5], rep: 'perdas', toast: '' };
+
+  flash(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2600); }
+  go = p => () => this.setState({ page: p, q: '' });
+  seg(active) { return active ? { bg: '#fff', fg: '#1b1c1a', sh: '0 1px 2px rgba(0,0,0,0.08)' } : { bg: 'transparent', fg: '#6b6d68', sh: 'none' }; }
+  setQty(id, d) { this.setState(s => ({ cart: s.cart.map(c => c.id === id ? { ...c, qtd: Math.max(1, c.qtd + d) } : c) })); }
+
+  renderVals() {
+    const s = this.state;
+    const navItem = (id, label, count) => ({ label, count, go: this.go(id), bg: s.page === id ? '#ececE6' : 'transparent', fg: s.page === id ? '#1b1c1a' : '#4a4c48', fw: s.page === id ? 600 : 400 });
+    const nav = [
+      { label: 'Visão geral', items: [navItem('painel', 'Painel')] },
+      { label: 'Comercial', items: [navItem('vendas', 'Vendas')] },
+      { label: 'Estoque', items: [navItem('estoque', 'Produtos e lotes', 5), navItem('ctrl', 'Controlados', 2), navItem('repo', 'Reposição')] },
+      { label: 'Financeiro', items: [navItem('fin', 'Contas e caixa', 2)] },
+      { label: 'Gestão', items: [navItem('rel', 'Relatórios')] }
+    ];
+
+    const days = [['Ter', 4820], ['Qua', 5310], ['Qui', 4990], ['Sex', 6720], ['Sáb', 7480], ['Dom', 3150], ['Seg', 5942]];
+    const week = days.map(([d, v], i) => ({ d, v: (v / 1000).toFixed(1) + 'k', h: Math.round(v / 7480 * 130) + 'px', c: i === 6 ? 'oklch(0.55 0.11 160)' : 'oklch(0.9 0.04 160)' }));
+
+    const cartItems = s.cart.map(c => ({ ...CATALOG.find(p => p.id === c.id), qtd: c.qtd }));
+    const sub = cartItems.reduce((a, c) => a + c.preco * c.qtd, 0);
+    const disc = s.pay === 'Convênio' ? sub * 0.1 : 0;
+    const q = s.q.trim().toLowerCase();
+    const results = q ? CATALOG.filter(p => (p.nome + p.pa).toLowerCase().includes(q)).slice(0, 5).map(p => {
+      const t = p.ctrl ? T.warn : T.neu;
+      return { ...p, preco: brl(p.preco), tagFg: t.fg, tagBg: t.bg, add: () => this.setState(st => ({ q: '', cart: st.cart.some(c => c.id === p.id) ? st.cart.map(c => c.id === p.id ? { ...c, qtd: c.qtd + 1 } : c) : [...st.cart, { id: p.id, qtd: 1 }] })) };
+    }) : [];
+
+    const stFor = r => r[7] === 'vence' ? ['Vence em < 60 dias', T.warn] : r[7] === 'min' ? ['Abaixo do mínimo', T.bad] : ['Regular', T.ok];
+    const filt = { todos: () => true, vence: r => r[7] === 'vence', min: r => r[7] === 'min', ctrl: r => /Controlado|Antimicrobiano/.test(r[2]) };
+    const stockTabs = [['todos', 'Todos'], ['vence', 'A vencer'], ['min', 'Abaixo do mínimo'], ['ctrl', 'Controlados']].map(([id, l]) => ({ l, n: STOCK.filter(filt[id]).length, ...this.seg(s.stockTab === id), pick: () => this.setState({ stockTab: id }) }));
+    const stockRows = STOCK.filter(filt[s.stockTab]).map(r => { const [st, t] = stFor(r); return { nome: r[0], pa: r[1], classe: r[2], lote: r[3], val: r[4], qtd: r[5], min: r[6], st, fg: t.fg, bg: t.bg }; });
+
+    const ctrlRows = [
+      ['28/09 14:12', 'Saída', 'Amoxicilina 500mg', 'Antimicrobiano', 'AX8812', 1, 'Rec. 0098-221 · CRM-MG 45.120', 'Escriturado', T.ok],
+      ['28/09 11:40', 'Saída', 'Clonazepam 2mg', 'Lista B1', 'CZ0471', 2, 'Notificação B 3.304.119', 'Escriturado', T.ok],
+      ['27/09 18:05', 'Saída', 'Azitromicina 500mg', 'Antimicrobiano', 'AZ3390', 1, 'Idade do paciente ausente', 'Inconsistente', T.bad],
+      ['27/09 09:30', 'Entrada', 'Sertralina 50mg', 'Lista C1', 'SE1180', 40, 'NF-e 118.301 · Santa Cruz', 'Escriturado', T.ok],
+      ['26/09 16:48', 'Saída', 'Sertralina 50mg', 'Lista C1', 'SE1180', 1, 'Lote divergente do físico', 'Inconsistente', T.bad],
+      ['26/09 10:02', 'Perda', 'Amoxicilina 500mg', 'Antimicrobiano', 'AX7730', 3, 'Vencimento · baixa técnica', 'Aguardando envio', T.warn]
+    ].map(r => ({ d: r[0], t: r[1], tc: r[1] === 'Entrada' ? 'oklch(0.44 0.11 160)' : r[1] === 'Perda' ? 'oklch(0.5 0.14 25)' : '#4a4c48', nome: r[2], lista: r[3], lote: r[4], q: r[5], rx: r[6], st: r[7], fg: r[8].fg, bg: r[8].bg }));
+
+    const sel = new Set(s.repoSel);
+    const repoRows = REPO.map((r, i) => {
+      const cob = r[2] / r[1], on = sel.has(i);
+      return { nome: r[0], giro: r[1].toFixed(1).replace('.', ','), est: r[2], cob: Math.round(cob) + ' dias', cc: cob < 7 ? 'oklch(0.5 0.14 25)' : '#4a4c48', sug: r[3], forn: r[4], check: on ? '✓' : '', cbd: on ? 'oklch(0.5 0.11 160)' : '#cfd0ca', cbg: on ? 'oklch(0.5 0.11 160)' : '#fff',
+        toggle: () => this.setState(st => ({ repoSel: st.repoSel.includes(i) ? st.repoSel.filter(x => x !== i) : [...st.repoSel, i] })) };
+    });
+    const selRows = REPO.filter((_, i) => sel.has(i));
+
+    const finStat = { aberto: ['Em aberto', T.neu], atrasado: ['Atrasado', T.bad], pago: [s.finTab === 'receber' ? 'Recebido' : 'Pago', T.ok] };
+    const finRows = (FIN[s.finTab] || []).map(r => ({ d: r[0], n: r[1], o: r[2], f: r[3], v: brl(r[4]), st: finStat[r[5]][0], fg: finStat[r[5]][1].fg, bg: finStat[r[5]][1].bg }));
+    const flowData = [[31, 24], [28, 30], [34, 22], [29, 26], [36, 27], [33, 25]];
+    let bal = 18.4;
+    const flow = flowData.map(([i, o], k) => { bal += i - o; return { w: 'Sem ' + (k + 1), ih: Math.round(i / 36 * 150) + 'px', oh: Math.round(o / 36 * 150) + 'px', s: 'R$ ' + bal.toFixed(1).replace('.', ',') + 'k', sc: '#4a4c48' }; });
+
+    const rep = REPORTS[s.rep];
+    const repMax = Math.max(...rep.rows.map(r => r[1]));
+
+    const [crumb, title] = PAGES[s.page];
+    return {
+      nav, crumb, title, toast: s.toast,
+      isPainel: s.page === 'painel', isVendas: s.page === 'vendas', isEstoque: s.page === 'estoque', isCtrl: s.page === 'ctrl', isRepo: s.page === 'repo', isFin: s.page === 'fin', isRel: s.page === 'rel',
+      kpis: [
+        { label: 'Vendas hoje', value: brl(5942.3), note: '+8,4% vs. segunda anterior', noteColor: 'oklch(0.44 0.11 160)' },
+        { label: 'Ticket médio', value: brl(47.9), note: '124 atendimentos', noteColor: '#7a7c77' },
+        { label: 'Lotes a vencer (60 dias)', value: '3', note: 'R$ 1.184,00 em custo', noteColor: 'oklch(0.47 0.11 60)' },
+        { label: 'A pagar nos próximos 7 dias', value: brl(19232.9), note: '1 conta atrasada', noteColor: 'oklch(0.5 0.14 25)' }
+      ],
+      week,
+      alerts: [
+        { t: '2 inconsistências no SNGPC', s: 'Corrigir antes da transmissão semanal', dot: 'oklch(0.58 0.14 25)', go: this.go('ctrl') },
+        { t: 'Losartana e Metformina abaixo do mínimo', s: 'Pedido sugerido pronto para aprovação', dot: 'oklch(0.58 0.14 25)', go: this.go('repo') },
+        { t: '3 lotes vencem até novembro', s: 'Amoxicilina, Azitromicina, Ibuprofeno', dot: 'oklch(0.66 0.12 70)', go: this.go('estoque') },
+        { t: 'Conta CEMIG vencida em 25/09', s: brl(912.44), dot: 'oklch(0.66 0.12 70)', go: this.go('fin') }
+      ],
+      lastSales: [
+        { h: '14:12', i: 'Amoxicilina 500mg, Dipirona 500mg ×2', p: 'Convênio', o: 'Marina S.', t: brl(40.23) },
+        { h: '13:58', i: 'Protetor solar FPS 50', p: 'Pix', o: 'Caio R.', t: brl(64.9) },
+        { h: '13:41', i: 'Losartana 50mg ×2, Omeprazol 20mg', p: 'Cartão', o: 'Caio R.', t: brl(58.9) },
+        { h: '13:20', i: 'Clonazepam 2mg', p: 'Dinheiro', o: 'Marina S.', t: brl(14.2) },
+        { h: '12:55', i: 'Fralda infantil G, Soro fisiológico 500ml ×2', p: 'Cartão', o: 'Ana L.', t: brl(71.3) }
+      ],
+      query: s.q, onQuery: e => this.setState({ q: e.target.value }), results, hasResults: results.length > 0,
+      cartRows: cartItems.map(c => ({ ...c, preco: brl(c.preco), sub: brl(c.preco * c.qtd), inc: () => this.setQty(c.id, 1), dec: () => this.setQty(c.id, -1), rm: () => this.setState(st => ({ cart: st.cart.filter(x => x.id !== c.id) })) })),
+      cartEmpty: cartItems.length === 0, needsRx: cartItems.some(c => c.ctrl),
+      rxFields: [{ l: 'Nº da receita', v: '0098-221' }, { l: 'Prescritor', v: 'Dr. Paulo Lima' }, { l: 'CRM / UF', v: '45.120 / MG' }, { l: 'Data da prescrição', v: '26/09/2026' }, { l: 'Paciente', v: 'João Pereira' }, { l: 'Idade · sexo', v: '54 · M' }],
+      subtotal: brl(sub), discount: brl(disc), total: brl(sub - disc),
+      pays: ['Pix', 'Cartão', 'Dinheiro', 'Convênio'].map(l => { const on = s.pay === l; return { l, pick: () => this.setState({ pay: l }), bd: on ? 'oklch(0.5 0.11 160)' : '#e3e3de', bg: on ? 'oklch(0.96 0.025 160)' : '#fff', fg: on ? 'oklch(0.4 0.11 160)' : '#4a4c48' }; }),
+      finish: () => { if (!cartItems.length) return; this.setState({ cart: [] }); this.flash('Venda de ' + brl(sub - disc) + ' registrada · estoque e caixa atualizados'); },
+      stockTabs, stockRows, ctrlRows,
+      sendSngpc: () => this.flash('Corrija as 2 inconsistências para transmitir o arquivo'),
+      repoRows, repoCount: selRows.length, repoUnits: selRows.reduce((a, r) => a + r[3], 0), repoTotal: brl(selRows.reduce((a, r) => a + r[3] * r[5], 0)),
+      genOrder: () => this.flash(new Set(selRows.map(r => r[4])).size + ' pedidos gerados e lançados em contas a pagar'),
+      finKpis: [
+        { l: 'Saldo em caixa', v: brl(18412.6), c: '#1b1c1a' },
+        { l: 'A receber (30 dias)', v: brl(27514.3), c: 'oklch(0.44 0.11 160)' },
+        { l: 'A pagar (30 dias)', v: brl(20145.34), c: '#1b1c1a' },
+        { l: 'Em atraso', v: brl(2892.44), c: 'oklch(0.5 0.14 25)' }
+      ],
+      finTabs: [['pagar', 'Contas a pagar'], ['receber', 'Contas a receber'], ['fluxo', 'Fluxo de caixa']].map(([id, l]) => ({ l, ...this.seg(s.finTab === id), pick: () => this.setState({ finTab: id }) })),
+      isFluxo: s.finTab === 'fluxo', isList: s.finTab !== 'fluxo', finCol: s.finTab === 'receber' ? 'Pagador' : 'Fornecedor / credor', finRows, flow,
+      reports: Object.entries(REPORTS).map(([id, r]) => ({ t: r.t, s: r.s, pick: () => this.setState({ rep: id }), bd: s.rep === id ? 'oklch(0.55 0.11 160)' : '#e7e7e2', sh: s.rep === id ? '0 0 0 3px oklch(0.95 0.03 160)' : 'none' })),
+      repTitle: rep.t, repNote: rep.note,
+      repRows: rep.rows.map(([l, v]) => ({ l, v: brl(v), w: Math.round(v / repMax * 100) + '%', c: rep.c }))
+    };
+  }
+}
+</script>
+</body>
+</html>

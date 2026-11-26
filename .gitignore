@@ -1,0 +1,27 @@
+# Dependências
+node_modules/
+
+# Builds e saídas
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Variáveis de ambiente (nunca versionar senhas)
+.env
+.env.*
+!.env.example
+
+# Cópias de segurança geradas por npm run backup
+backups/
+
+# Logs e arquivos do sistema
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/

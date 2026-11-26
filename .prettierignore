@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+package-lock.json
+backend/prisma/migrations
+docs/design
+docs/exemplos

@@ -1,0 +1,659 @@
+// Schema completo do Vitalis. Nenhum módulo cria migração: alterações aqui são feitas só na base.
+// Convenções: dinheiro em centavos (Int), datas sem hora em @db.Date, horários em UTC.
+// Tabelas de movimentação não aceitam exclusão física: correções e estornos criam novos registros.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// Enums (idênticos a shared/src/enums.ts)
+// ============================================================
+
+enum Perfil {
+  ADMIN
+  FARMACEUTICO
+  ATENDENTE
+  FINANCEIRO
+}
+
+enum ClasseProduto {
+  GENERICO
+  REFERENCIA
+  SIMILAR
+  OUTRO
+}
+
+enum TipoControle {
+  NENHUM
+  ANTIMICROBIANO
+  CONTROLADO
+}
+
+enum FormaPagamento {
+  DINHEIRO
+  CARTAO_DEBITO
+  CARTAO_CREDITO
+  PIX
+  CONVENIO
+}
+
+enum FormaPagamentoConta {
+  BOLETO
+  TRANSFERENCIA
+  PIX
+  DINHEIRO
+  CARTAO
+  DEBITO_AUTOMATICO
+}
+
+enum StatusVenda {
+  FINALIZADA
+  CANCELADA
+}
+
+enum TipoReceita {
+  ANTIMICROBIANO
+  CONTROLE_ESPECIAL
+}
+
+enum Sexo {
+  F
+  M
+}
+
+enum TipoSolicitacaoTitular {
+  ACESSO
+  CORRECAO
+  EXCLUSAO
+}
+
+enum StatusSolicitacaoTitular {
+  PENDENTE
+  ATENDIDA
+}
+
+enum MotivoPerda {
+  VENCIMENTO
+  AVARIA
+  FURTO
+}
+
+enum StatusInventario {
+  ABERTO
+  FECHADO
+}
+
+enum TipoMovimentoControlado {
+  ENTRADA
+  SAIDA
+  PERDA
+  AJUSTE
+}
+
+enum StatusMovimentoControlado {
+  OK
+  INCONSISTENTE
+  TRANSMITIDO
+}
+
+enum OrigemMovimentoControlado {
+  NOTA_ENTRADA
+  VENDA
+  CANCELAMENTO_VENDA
+  PERDA
+  INVENTARIO
+  CORRECAO
+}
+
+enum StatusTransmissao {
+  ACEITA
+  REJEITADA
+}
+
+enum OrigemContaPagar {
+  MANUAL
+  NOTA_ENTRADA
+}
+
+enum StatusContaPagar {
+  ABERTA
+  PAGA
+  ESTORNADA
+}
+
+enum OrigemContaReceber {
+  MANUAL
+  VENDA_CARTAO
+  FATURA_CONVENIO
+}
+
+enum StatusContaReceber {
+  ABERTA
+  RECEBIDA
+  ESTORNADA
+}
+
+enum TipoMovimentoCaixa {
+  ENTRADA
+  SAIDA
+}
+
+enum OrigemMovimentoCaixa {
+  VENDA
+  CANCELAMENTO_VENDA
+  CONTA_PAGAR
+  CONTA_RECEBER
+  ESTORNO_CONTA_PAGAR
+  ESTORNO_CONTA_RECEBER
+  MANUAL
+}
+
+// ============================================================
+// Base: usuários, auditoria e configuração
+// ============================================================
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  login     String   @unique
+  senhaHash String
+  perfil    Perfil
+  ativo     Boolean  @default(true)
+  criadoEm  DateTime @default(now())
+
+  auditorias              Auditoria[]
+  vendasOperadas          Venda[]                      @relation("VendaOperador")
+  vendasCanceladas        Venda[]                      @relation("VendaCanceladaPor")
+  itensCancelados         ItemVenda[]                  @relation("ItemVendaCanceladoPor")
+  notasRegistradas        NotaEntrada[]
+  perdas                  Perda[]
+  inventariosAbertos      Inventario[]                 @relation("InventarioAbertoPor")
+  inventariosFechados     Inventario[]                 @relation("InventarioFechadoPor")
+  movimentosControlados   MovimentoControlado[]
+  transmissoes            TransmissaoSngpc[]
+  solicitacoesRegistradas SolicitacaoTitular[]         @relation("SolicitacaoRegistradaPor")
+  solicitacoesAtendidas   SolicitacaoTitular[]         @relation("SolicitacaoAtendidaPor")
+  dispensacoes            DispensacaoFarmaciaPopular[]
+  contasPagarCriadas      ContaPagar[]
+  contasReceberCriadas    ContaReceber[]
+  caixas                  CaixaDiario[]
+  movimentosCaixa         MovimentoCaixa[]
+}
+
+/// RNF-GER-03: quem fez cada operação e quando.
+model Auditoria {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int?
+  usuario    Usuario? @relation(fields: [usuarioId], references: [id])
+  acao       String
+  entidade   String
+  entidadeId String?
+  dados      Json?
+  criadoEm   DateTime @default(now())
+
+  @@index([entidade, entidadeId])
+  @@index([criadoEm])
+}
+
+model Configuracao {
+  chave        String   @id
+  valor        String
+  atualizadoEm DateTime @default(now()) @updatedAt
+}
+
+// ============================================================
+// Estoque
+// ============================================================
+
+model Fornecedor {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  cnpj     String   @unique
+  criadoEm DateTime @default(now())
+
+  notas       NotaEntrada[]
+  contasPagar ContaPagar[]
+}
+
+model Produto {
+  id                 Int           @id @default(autoincrement())
+  nome               String
+  principioAtivo     String
+  codigoBarras       String        @unique
+  classe             ClasseProduto
+  tipoControle       TipoControle  @default(NENHUM)
+  /// Lista da Portaria SVS/MS nº 344/1998 (ex.: B1, C1) para controlados.
+  listaPortaria344   String?
+  precoVendaCentavos Int
+  estoqueMinimo      Int           @default(0)
+  ativo              Boolean       @default(true)
+  criadoEm           DateTime      @default(now())
+  atualizadoEm       DateTime      @default(now()) @updatedAt
+
+  lotes                 Lote[]
+  itensNota             ItemNotaEntrada[]
+  itensVenda            ItemVenda[]
+  movimentosControlados MovimentoControlado[]
+
+  @@index([nome])
+  @@index([principioAtivo])
+}
+
+/// Saldo por lote (RF-EST-02). A migração inicial cria CHECK (quantidade >= 0).
+model Lote {
+  id                    Int          @id @default(autoincrement())
+  produtoId             Int
+  produto               Produto      @relation(fields: [produtoId], references: [id])
+  numero                String
+  validade              DateTime     @db.Date
+  quantidade            Int
+  custoUnitarioCentavos Int
+  notaEntradaId         Int?
+  notaEntrada           NotaEntrada? @relation(fields: [notaEntradaId], references: [id])
+  criadoEm              DateTime     @default(now())
+
+  itensNota             ItemNotaEntrada[]
+  itensVenda            ItemVenda[]
+  perdas                Perda[]
+  itensInventario       ItemInventario[]
+  movimentosControlados MovimentoControlado[]
+
+  @@unique([produtoId, numero])
+  @@index([produtoId, validade])
+}
+
+model NotaEntrada {
+  id                 Int        @id @default(autoincrement())
+  fornecedorId       Int
+  fornecedor         Fornecedor @relation(fields: [fornecedorId], references: [id])
+  numero             String
+  serie              String
+  /// Chave de acesso de 44 dígitos. Nota com a mesma chave é recusada.
+  chave              String     @unique
+  emissao            DateTime
+  valorTotalCentavos Int
+  xmlOriginal        String
+  usuarioId          Int?
+  usuario            Usuario?   @relation(fields: [usuarioId], references: [id])
+  criadoEm           DateTime   @default(now())
+
+  itens      ItemNotaEntrada[]
+  duplicatas DuplicataNota[]
+  lotes      Lote[]
+}
+
+model ItemNotaEntrada {
+  id                    Int         @id @default(autoincrement())
+  notaId                Int
+  nota                  NotaEntrada @relation(fields: [notaId], references: [id])
+  produtoId             Int
+  produto               Produto     @relation(fields: [produtoId], references: [id])
+  loteId                Int
+  lote                  Lote        @relation(fields: [loteId], references: [id])
+  quantidade            Int
+  custoUnitarioCentavos Int
+}
+
+model DuplicataNota {
+  id            Int         @id @default(autoincrement())
+  notaId        Int
+  nota          NotaEntrada @relation(fields: [notaId], references: [id])
+  numero        String
+  vencimento    DateTime    @db.Date
+  valorCentavos Int
+
+  contaPagar ContaPagar?
+}
+
+model Perda {
+  id          Int         @id @default(autoincrement())
+  loteId      Int
+  lote        Lote        @relation(fields: [loteId], references: [id])
+  quantidade  Int
+  motivo      MotivoPerda
+  observacao  String?
+  usuarioId   Int
+  usuario     Usuario     @relation(fields: [usuarioId], references: [id])
+  criadoEm    DateTime    @default(now())
+}
+
+model Inventario {
+  id           Int              @id @default(autoincrement())
+  status       StatusInventario @default(ABERTO)
+  observacao   String?
+  abertoPorId  Int
+  abertoPor    Usuario          @relation("InventarioAbertoPor", fields: [abertoPorId], references: [id])
+  abertoEm     DateTime         @default(now())
+  fechadoPorId Int?
+  fechadoPor   Usuario?         @relation("InventarioFechadoPor", fields: [fechadoPorId], references: [id])
+  fechadoEm    DateTime?
+
+  itens ItemInventario[]
+}
+
+model ItemInventario {
+  id                Int        @id @default(autoincrement())
+  inventarioId      Int
+  inventario        Inventario @relation(fields: [inventarioId], references: [id])
+  loteId            Int
+  lote              Lote       @relation(fields: [loteId], references: [id])
+  quantidadeSistema Int
+  quantidadeContada Int?
+
+  @@unique([inventarioId, loteId])
+}
+
+/// Livro de movimentações de controlados e antimicrobianos (RF-EST-07, RNF-EST-02).
+/// Nunca é apagado nem editado em seus dados: a correção cria um novo movimento.
+model MovimentoControlado {
+  id                 Int                       @id @default(autoincrement())
+  produtoId          Int
+  produto            Produto                   @relation(fields: [produtoId], references: [id])
+  loteId             Int?
+  lote               Lote?                     @relation(fields: [loteId], references: [id])
+  /// Número do lote informado no movimento (pode divergir do estoque — RF-EST-08).
+  loteNumero         String
+  tipo               TipoMovimentoControlado
+  quantidade         Int
+  data               DateTime                  @default(now())
+  origemTipo         OrigemMovimentoControlado
+  origemId           Int?
+  receitaId          Int?
+  receita            Receita?                  @relation(fields: [receitaId], references: [id])
+  status             StatusMovimentoControlado @default(OK)
+  inconsistencias    Json?
+  corrigeMovimentoId Int?
+  corrigeMovimento   MovimentoControlado?      @relation("CorrecaoMovimento", fields: [corrigeMovimentoId], references: [id])
+  correcoes          MovimentoControlado[]     @relation("CorrecaoMovimento")
+  transmissaoId      Int?
+  transmissao        TransmissaoSngpc?         @relation(fields: [transmissaoId], references: [id])
+  observacao         String?
+  /// Dados da receita informados numa correção (RNF-EST-02). A receita original não é alterada.
+  receitaInformada   Json?
+  usuarioId          Int?
+  usuario            Usuario?                  @relation(fields: [usuarioId], references: [id])
+  criadoEm           DateTime                  @default(now())
+
+  @@index([data, status])
+  @@index([produtoId])
+}
+
+model TransmissaoSngpc {
+  id            Int               @id @default(autoincrement())
+  periodoInicio DateTime          @db.Date
+  periodoFim    DateTime          @db.Date
+  arquivoXml    String
+  protocolo     String?
+  status        StatusTransmissao
+  usuarioId     Int
+  usuario       Usuario           @relation(fields: [usuarioId], references: [id])
+  criadoEm      DateTime          @default(now())
+
+  movimentos MovimentoControlado[]
+}
+
+// ============================================================
+// Atendimento
+// ============================================================
+
+model Convenio {
+  id                   Int      @id @default(autoincrement())
+  nome                 String
+  cnpj                 String   @unique
+  /// Percentual de desconto em pontos-base (1000 = 10%).
+  percentualDescontoBp Int
+  diaFechamento        Int
+  diasParaPagamento    Int
+  ativo                Boolean  @default(true)
+  criadoEm             DateTime @default(now())
+  atualizadoEm         DateTime @default(now()) @updatedAt
+
+  clientes      Cliente[]
+  vendas        Venda[]
+  contasReceber ContaReceber[]
+}
+
+model Cliente {
+  id                Int       @id @default(autoincrement())
+  nome              String
+  /// Somente dígitos. Após anonimização (LGPD), recebe um hash.
+  cpf               String    @unique
+  telefone          String?
+  consentimentoEm   DateTime
+  convenioId        Int?
+  convenio          Convenio? @relation(fields: [convenioId], references: [id])
+  matriculaConvenio String?
+  anonimizado       Boolean   @default(false)
+  anonimizadoEm     DateTime?
+  criadoEm          DateTime  @default(now())
+  atualizadoEm      DateTime  @default(now()) @updatedAt
+
+  vendas        Venda[]
+  solicitacoes  SolicitacaoTitular[]
+  dispensacoes  DispensacaoFarmaciaPopular[]
+
+  @@index([nome])
+}
+
+/// Pedidos do titular dos dados (RF-ATD-08, LGPD).
+model SolicitacaoTitular {
+  id             Int                      @id @default(autoincrement())
+  clienteId      Int
+  cliente        Cliente                  @relation(fields: [clienteId], references: [id])
+  tipo           TipoSolicitacaoTitular
+  status         StatusSolicitacaoTitular @default(PENDENTE)
+  detalhes       Json?
+  resposta       Json?
+  usuarioId      Int
+  usuario        Usuario                  @relation("SolicitacaoRegistradaPor", fields: [usuarioId], references: [id])
+  atendidaPorId  Int?
+  atendidaPor    Usuario?                 @relation("SolicitacaoAtendidaPor", fields: [atendidaPorId], references: [id])
+  atendidaEm     DateTime?
+  criadoEm       DateTime                 @default(now())
+}
+
+model DispensacaoFarmaciaPopular {
+  id            Int      @id @default(autoincrement())
+  clienteId     Int
+  cliente       Cliente  @relation(fields: [clienteId], references: [id])
+  vendaId       Int?
+  venda         Venda?   @relation(fields: [vendaId], references: [id])
+  numeroReceita String
+  dataReceita   DateTime @db.Date
+  crmPrescritor String
+  ufCrm         String
+  /// Itens dispensados: [{ produtoId, quantidade }]
+  itens         Json
+  /// Número de autorização (simulado nesta etapa).
+  autorizacao   String
+  usuarioId     Int
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id])
+  criadoEm      DateTime @default(now())
+}
+
+// ============================================================
+// Vendas
+// ============================================================
+
+model Venda {
+  id                   Int            @id @default(autoincrement())
+  numero               Int            @unique @default(autoincrement())
+  operadorId           Int
+  operador             Usuario        @relation("VendaOperador", fields: [operadorId], references: [id])
+  clienteId            Int?
+  cliente              Cliente?       @relation(fields: [clienteId], references: [id])
+  convenioId           Int?
+  convenio             Convenio?      @relation(fields: [convenioId], references: [id])
+  status               StatusVenda    @default(FINALIZADA)
+  subtotalCentavos     Int
+  descontoCentavos     Int            @default(0)
+  totalCentavos        Int
+  formaPagamento       FormaPagamento
+  /// Chave fictícia do documento fiscal (RF-VEN-08 simulado).
+  chaveDocumentoFiscal String?
+  criadoEm             DateTime       @default(now())
+  canceladaEm          DateTime?
+  motivoCancelamento   String?
+  canceladaPorId       Int?
+  canceladaPor         Usuario?       @relation("VendaCanceladaPor", fields: [canceladaPorId], references: [id])
+
+  itens        ItemVenda[]
+  receitas     Receita[]
+  dispensacoes DispensacaoFarmaciaPopular[]
+  itensFatura  ItemFaturaConvenio[]
+
+  @@index([criadoEm])
+}
+
+model ItemVenda {
+  id                    Int       @id @default(autoincrement())
+  vendaId               Int
+  venda                 Venda     @relation(fields: [vendaId], references: [id])
+  produtoId             Int
+  produto               Produto   @relation(fields: [produtoId], references: [id])
+  loteId                Int
+  lote                  Lote      @relation(fields: [loteId], references: [id])
+  quantidade            Int
+  precoUnitarioCentavos Int
+  subtotalCentavos      Int
+  cancelado             Boolean   @default(false)
+  motivoCancelamento    String?
+  canceladoEm           DateTime?
+  canceladoPorId        Int?
+  canceladoPor          Usuario?  @relation("ItemVendaCanceladoPor", fields: [canceladoPorId], references: [id])
+}
+
+model Receita {
+  id             Int         @id @default(autoincrement())
+  vendaId        Int
+  venda          Venda       @relation(fields: [vendaId], references: [id])
+  tipo           TipoReceita
+  numero         String
+  prescritorNome String
+  crm            String
+  uf             String
+  dataEmissao    DateTime    @db.Date
+  pacienteNome   String
+  pacienteIdade  Int?
+  pacienteSexo   Sexo?
+  criadoEm       DateTime    @default(now())
+
+  movimentosControlados MovimentoControlado[]
+}
+
+// ============================================================
+// Financeiro
+// ============================================================
+
+model ContaPagar {
+  id             Int                  @id @default(autoincrement())
+  credor         String
+  fornecedorId   Int?
+  fornecedor     Fornecedor?          @relation(fields: [fornecedorId], references: [id])
+  origemTipo     OrigemContaPagar     @default(MANUAL)
+  /// NOTA_ENTRADA: id da NotaEntrada.
+  origemId       Int?
+  /// NOTA_ENTRADA: duplicata que originou esta conta (uma conta por duplicata).
+  duplicataId    Int?                 @unique
+  duplicata      DuplicataNota?       @relation(fields: [duplicataId], references: [id])
+  descricao      String
+  vencimento     DateTime             @db.Date
+  valorCentavos  Int
+  formaPagamento FormaPagamentoConta?
+  status         StatusContaPagar     @default(ABERTA)
+  pagaEm         DateTime?
+  estornoDeId    Int?
+  estornoDe      ContaPagar?          @relation("EstornoContaPagar", fields: [estornoDeId], references: [id])
+  estornos       ContaPagar[]         @relation("EstornoContaPagar")
+  motivoEstorno  String?
+  criadoPorId    Int?
+  criadoPor      Usuario?             @relation(fields: [criadoPorId], references: [id])
+  criadoEm       DateTime             @default(now())
+
+  @@index([vencimento, status])
+}
+
+model ContaReceber {
+  id            Int                @id @default(autoincrement())
+  pagador       String
+  origemTipo    OrigemContaReceber @default(MANUAL)
+  /// VENDA_CARTAO: id da Venda.
+  origemId      Int?
+  convenioId    Int?
+  convenio      Convenio?          @relation(fields: [convenioId], references: [id])
+  /// FATURA_CONVENIO: período de competência da fatura.
+  periodoInicio DateTime?          @db.Date
+  periodoFim    DateTime?          @db.Date
+  descricao     String
+  vencimento    DateTime           @db.Date
+  valorCentavos Int
+  status        StatusContaReceber @default(ABERTA)
+  recebidaEm    DateTime?
+  estornoDeId   Int?
+  estornoDe     ContaReceber?      @relation("EstornoContaReceber", fields: [estornoDeId], references: [id])
+  estornos      ContaReceber[]     @relation("EstornoContaReceber")
+  motivoEstorno String?
+  criadoPorId   Int?
+  criadoPor     Usuario?           @relation(fields: [criadoPorId], references: [id])
+  criadoEm      DateTime           @default(now())
+
+  itensFatura ItemFaturaConvenio[]
+
+  @@index([vencimento, status])
+}
+
+model ItemFaturaConvenio {
+  id             Int          @id @default(autoincrement())
+  contaReceberId Int
+  contaReceber   ContaReceber @relation(fields: [contaReceberId], references: [id])
+  vendaId        Int
+  venda          Venda        @relation(fields: [vendaId], references: [id])
+  valorCentavos  Int
+  /// Preenchido quando a venda é cancelada (o item não é apagado).
+  estornadoEm    DateTime?
+  criadoEm       DateTime     @default(now())
+}
+
+model CaixaDiario {
+  id                      Int       @id @default(autoincrement())
+  operadorId              Int
+  operador                Usuario   @relation(fields: [operadorId], references: [id])
+  abertoEm                DateTime  @default(now())
+  valorAberturaCentavos   Int
+  fechadoEm               DateTime?
+  /// Totais por forma de pagamento no fechamento: { DINHEIRO: 1234, PIX: ... }
+  totaisPorForma          Json?
+  valorFechamentoCentavos Int?
+  observacao              String?
+
+  movimentos MovimentoCaixa[]
+}
+
+/// O saldo em caixa é sempre a soma dos movimentos (RF-FIN-05).
+model MovimentoCaixa {
+  id             Int                  @id @default(autoincrement())
+  tipo           TipoMovimentoCaixa
+  origemTipo     OrigemMovimentoCaixa
+  origemId       Int?
+  valorCentavos  Int
+  formaPagamento FormaPagamento?
+  data           DateTime             @default(now())
+  descricao      String
+  caixaId        Int?
+  caixa          CaixaDiario?         @relation(fields: [caixaId], references: [id])
+  estornoDeId    Int?
+  estornoDe      MovimentoCaixa?      @relation("EstornoMovimentoCaixa", fields: [estornoDeId], references: [id])
+  estornos       MovimentoCaixa[]     @relation("EstornoMovimentoCaixa")
+  usuarioId      Int?
+  usuario        Usuario?             @relation(fields: [usuarioId], references: [id])
+  criadoEm       DateTime             @default(now())
+
+  @@index([data])
+  @@index([origemTipo, origemId])
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@vitalis/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false src/server.ts",
+    "start": "tsx src/server.ts",
+    "build": "prisma generate && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:reset": "tsx scripts/resetarBanco.ts",
+    "db:migrate:deploy": "dotenv -e ../.env -- prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts",
+    "backup": "tsx scripts/backup.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@vitalis/shared": "*",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.6.1",
+    "express": "^5.3.0",
+    "fast-xml-parser": "^5.12.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2",
+    "tsx": "^4.23.15",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^20.19.0",
+    "@types/supertest": "^6.0.3",
+    "dotenv-cli": "^8.0.0",
+    "prisma": "^6.19.3",
+    "supertest": "^7.1.4",
+    "vitest": "^3.2.7"
+  }
+}

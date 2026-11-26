@@ -1,0 +1,41 @@
+{
+  "name": "vitalis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vitalis — Sistema de Gestão Farmacêutica Integrado",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c green,blue \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm run dev -w backend",
+    "dev:web": "npm run dev -w frontend",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "start": "npm run start -w backend",
+    "test": "npm run test -w shared && npm run test -w backend && npm run test -w frontend",
+    "typecheck": "npm run typecheck --workspaces",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "db:generate": "npm run db:generate -w backend",
+    "db:reset": "npm run db:reset -w backend",
+    "db:migrate:deploy": "npm run db:migrate:deploy -w backend",
+    "db:seed": "npm run db:seed -w backend",
+    "backup": "npm run backup -w backend"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "concurrently": "^9.2.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.10.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.74.0"
+  }
+}

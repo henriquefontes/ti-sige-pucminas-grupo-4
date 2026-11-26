@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NF-e FICTÍCIA para testes do Vitalis. Não tem validade fiscal. -->
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+  <NFe>
+    <infNFe Id="NFe31261134567890000130550010000903311111223343" versao="4.00">
+      <ide>
+        <cUF>31</cUF>
+        <cNF>11122334</cNF>
+        <natOp>Venda de mercadoria adquirida de terceiros</natOp>
+        <mod>55</mod>
+        <serie>1</serie>
+        <nNF>90331</nNF>
+        <dhEmi>2026-11-22T09:05:00-03:00</dhEmi>
+        <tpNF>1</tpNF>
+        <tpAmb>2</tpAmb>
+      </ide>
+      <emit>
+        <CNPJ>34567890000130</CNPJ>
+        <xNome>Panaceia Distribuidora Ltda</xNome>
+        <xFant>Panaceia</xFant>
+        <enderEmit>
+          <xLgr>Rua Fictícia</xLgr>
+          <nro>100</nro>
+          <xBairro>Centro</xBairro>
+          <xMun>Belo Horizonte</xMun>
+          <UF>MG</UF>
+          <CEP>30000000</CEP>
+        </enderEmit>
+        <IE>0012345670001</IE>
+        <CRT>3</CRT>
+      </emit>
+      <dest>
+        <CNPJ>67890123000116</CNPJ>
+        <xNome>Vitalis Loja Savassi (fictícia)</xNome>
+      </dest>
+      <det nItem="1">
+        <prod>
+          <cProd>000030</cProd>
+          <cEAN>7891000000030</cEAN>
+          <xProd>FLUOXETINA 20MG 30 CAPS</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>30.0000</qCom>
+          <vUnCom>7.0000000000</vUnCom>
+          <vProd>210.00</vProd>
+          <cEANTrib>7891000000030</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>30.0000</qTrib>
+          <vUnTrib>7.0000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>FX4522</nLote>
+            <qLote>30.000</qLote>
+            <dFab>2026-03-12</dFab>
+            <dVal>2028-03-31</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <det nItem="2">
+        <prod>
+          <cProd>000026</cProd>
+          <cEAN>7891000000026</cEAN>
+          <xProd>CEFALEXINA 500MG 8 CAPS</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>20.0000</qCom>
+          <vUnCom>9.0000000000</vUnCom>
+          <vProd>180.00</vProd>
+          <cEANTrib>7891000000026</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>20.0000</qTrib>
+          <vUnTrib>9.0000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>CF1290</nLote>
+            <qLote>20.000</qLote>
+            <dFab>2026-05-18</dFab>
+            <dVal>2028-05-31</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <det nItem="3">
+        <prod>
+          <cProd>000009</cProd>
+          <cEAN>7891000000009</cEAN>
+          <xProd>OMEPRAZOL 20MG 28 CAPS</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>50.0000</qCom>
+          <vUnCom>8.2000000000</vUnCom>
+          <vProd>410.00</vProd>
+          <cEANTrib>7891000000009</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>50.0000</qTrib>
+          <vUnTrib>8.2000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>OM7840</nLote>
+            <qLote>50.000</qLote>
+            <dFab>2026-06-25</dFab>
+            <dVal>2029-06-30</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <det nItem="4">
+        <prod>
+          <cProd>000019</cProd>
+          <cEAN>7891000000019</cEAN>
+          <xProd>NEOSALDINA 20 DRAGEAS</xProd>
+          <NCM>30049099</NCM>
+          <CFOP>5405</CFOP>
+          <uCom>CX</uCom>
+          <qCom>24.0000</qCom>
+          <vUnCom>11.5000000000</vUnCom>
+          <vProd>276.00</vProd>
+          <cEANTrib>7891000000019</cEANTrib>
+          <uTrib>CX</uTrib>
+          <qTrib>24.0000</qTrib>
+          <vUnTrib>11.5000000000</vUnTrib>
+          <indTot>1</indTot>
+          <rastro>
+            <nLote>NS2310</nLote>
+            <qLote>24.000</qLote>
+            <dFab>2026-04-04</dFab>
+            <dVal>2028-04-30</dVal>
+          </rastro>
+        </prod>
+        <imposto>
+          <ICMS><ICMS60><orig>0</orig><CST>60</CST></ICMS60></ICMS>
+        </imposto>
+      </det>
+      <total>
+        <ICMSTot>
+          <vProd>1076.00</vProd>
+          <vNF>1076.00</vNF>
+        </ICMSTot>
+      </total>
+      <cobr>
+        <fat>
+          <nFat>90331</nFat>
+          <vOrig>1076.00</vOrig>
+          <vLiq>1076.00</vLiq>
+        </fat>
+        <dup>
+          <nDup>001</nDup>
+          <dVenc>2026-12-15</dVenc>
+          <vDup>538.00</vDup>
+        </dup>
+        <dup>
+          <nDup>002</nDup>
+          <dVenc>2027-01-14</dVenc>
+          <vDup>538.00</vDup>
+        </dup>
+      </cobr>
+    </infNFe>
+  </NFe>
+  <protNFe versao="4.00">
+    <infProt>
+      <tpAmb>2</tpAmb>
+      <chNFe>31261134567890000130550010000903311111223343</chNFe>
+      <dhRecbto>2026-11-22T09:05:00-03:00</dhRecbto>
+      <nProt>131260000090331</nProt>
+      <cStat>100</cStat>
+      <xMotivo>Autorizado o uso da NF-e</xMotivo>
+    </infProt>
+  </protNFe>
+</nfeProc>

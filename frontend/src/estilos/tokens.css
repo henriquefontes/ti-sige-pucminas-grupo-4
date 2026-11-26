@@ -1,0 +1,111 @@
+/*
+ * Tokens do design system, extraídos do projeto de design do Vitalis no Claude Design
+ * (referência em docs/design/). Use sempre estas variáveis nas telas dos módulos.
+ */
+:root {
+  /* Superfícies */
+  --cor-fundo: #f6f6f3;
+  --cor-superficie: #ffffff;
+  --cor-lateral: #fbfbf9;
+  --cor-campo-leitura: #fbfbf9;
+  --cor-hover: #efefea;
+  --cor-hover-suave: #f6f6f3;
+  --cor-item-ativo: #ecece6;
+  --cor-segmentado: #edede8;
+  --cor-trilha: #f0f0ec;
+
+  /* Bordas e divisórias */
+  --cor-borda: #e7e7e2;
+  --cor-borda-campo: #e3e3de;
+  --cor-divisor: #efefea;
+  --cor-divisor-suave: #f3f3ef;
+  --cor-neutra-forte: #cfd0ca;
+  --cor-ponto: #c9cac4;
+
+  /* Texto */
+  --cor-texto: #1b1c1a;
+  --cor-texto-2: #4a4c48;
+  --cor-texto-3: #5c5e5a;
+  --cor-texto-4: #6b6d68;
+  --cor-texto-suave: #7a7c77;
+  --cor-texto-mudo: #8b8d87;
+  --cor-texto-icone: #a0a29c;
+
+  /* Marca (verde) */
+  --cor-primaria: oklch(0.5 0.11 160);
+  --cor-primaria-hover: oklch(0.44 0.11 160);
+  --cor-primaria-logo: oklch(0.52 0.11 160);
+  --cor-primaria-foco: oklch(0.55 0.11 160);
+  --cor-primaria-anel: oklch(0.94 0.04 160);
+  --cor-primaria-suave: oklch(0.96 0.025 160);
+  --cor-primaria-texto: oklch(0.4 0.11 160);
+  --cor-primaria-grafico: oklch(0.6 0.11 160);
+  --cor-primaria-grafico-suave: oklch(0.9 0.04 160);
+  --cor-link: oklch(0.45 0.11 160);
+  --cor-link-hover: oklch(0.35 0.11 160);
+  --cor-escura: #1b1c1a;
+
+  /* Situações (etiquetas) */
+  --cor-ok-texto: oklch(0.44 0.11 160);
+  --cor-ok-fundo: oklch(0.95 0.03 160);
+  --cor-ok-ponto: oklch(0.6 0.13 160);
+  --cor-atencao-texto: oklch(0.47 0.11 60);
+  --cor-atencao-fundo: oklch(0.95 0.045 80);
+  --cor-atencao-ponto: oklch(0.66 0.12 70);
+  --cor-critico-texto: oklch(0.5 0.14 25);
+  --cor-critico-fundo: oklch(0.95 0.03 25);
+  --cor-critico-ponto: oklch(0.58 0.14 25);
+  --cor-neutro-texto: #5c5e5a;
+  --cor-neutro-fundo: #efefea;
+
+  /* Tipografia */
+  --fonte: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fonte-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  --texto-xs: 11px;
+  --texto-sm: 12px;
+  --texto-md: 13px;
+  --texto-base: 14px;
+  --texto-lg: 15px;
+  --texto-xl: 20px;
+  --texto-2xl: 24px;
+  --texto-3xl: 26px;
+  --texto-4xl: 28px;
+  --peso-normal: 400;
+  --peso-medio: 500;
+  --peso-forte: 600;
+  --espaco-letra-titulo: -0.02em;
+
+  /* Espaçamentos */
+  --esp-1: 4px;
+  --esp-2: 6px;
+  --esp-3: 8px;
+  --esp-4: 10px;
+  --esp-5: 12px;
+  --esp-6: 14px;
+  --esp-7: 16px;
+  --esp-8: 18px;
+  --esp-9: 20px;
+  --esp-10: 24px;
+  --esp-11: 28px;
+  --esp-12: 40px;
+
+  /* Raios */
+  --raio-xs: 5px;
+  --raio-sm: 7px;
+  --raio-md: 8px;
+  --raio-lg: 10px;
+  --raio-xl: 12px;
+  --raio-pilula: 20px;
+
+  /* Sombras */
+  --sombra-segmento: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --sombra-popover: 0 12px 32px rgba(20, 20, 15, 0.08);
+  --sombra-aviso: 0 10px 30px rgba(0, 0, 0, 0.18);
+  --sombra-modal: 0 24px 60px rgba(20, 20, 15, 0.18);
+
+  /* Layout */
+  --largura-lateral: 232px;
+  --altura-campo: 38px;
+  --altura-campo-grande: 46px;
+  --altura-botao: 36px;
+}

@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: vitalis-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vitalis
+      POSTGRES_PASSWORD: vitalis
+      POSTGRES_DB: vitalis
+      TZ: UTC
+    ports:
+      - '5432:5432'
+    volumes:
+      - vitalis-dados:/var/lib/postgresql/data
+      - ./docker/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vitalis -d vitalis']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  vitalis-dados:

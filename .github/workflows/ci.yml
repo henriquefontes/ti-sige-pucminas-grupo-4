@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: vitalis
+          POSTGRES_PASSWORD: vitalis
+          POSTGRES_DB: vitalis_teste
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U vitalis -d vitalis_teste"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://vitalis:vitalis@localhost:5432/vitalis_teste
+      DATABASE_URL_TESTE: postgresql://vitalis:vitalis@localhost:5432/vitalis_teste
+      JWT_SEGREDO: segredo-somente-para-o-ci
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Gerar o cliente Prisma
+        run: npm run db:generate
+
+      - name: Verificar tipos
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Testes
+        run: npm test
+
+      - name: Build
+        run: npm run build
